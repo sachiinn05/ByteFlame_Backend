@@ -1,16 +1,20 @@
 const express=require("express");
 
 const app=express();
+const {adminAuth,userAdmin}=require("./middleware/auth.js")
 
-app.use("/test",(req,res)=>{
-    res.send("hello from test");
+app.use("/admin",adminAuth);
+app.use("/user",userAdmin);
+
+app.get("/admin/login",(req,res)=>{
+    res.send("login succesfull");
 });
-app.use("/insta",(req,res)=>{
-    res.send("helloe from insta");
-});
-app.use("/",(req,res) =>{
-    res.send("hello from Sachin server");
-});
+app.get("/user/data",(req,res)=>{
+    res.send("data fetch succesfull");
+})
+
+
+
 
 app.listen(9000,()=>{
     console.log("Server listen on port 9000");
