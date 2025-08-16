@@ -1,13 +1,13 @@
 const mongoose=require("mongoose");
 
 const userSchema=new mongoose.Schema({
-    firstNmae:{
+    firstName:{
         type:String,
     },
-    lastNmae:{
+    lastName:{
         type:String,
     },
-    emailId:{
+    email:{
         type:String,
     },
     password:{

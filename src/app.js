@@ -2,16 +2,16 @@ const express=require("express");
 const connectDB=require("./config/database.js");
 const User=require("./model/user.js")
 const app=express();
-
+app.use(express.json());
 app.post("/signUp",async(req,res)=>{
-   const user=new User({
-    firstNmae:"Himu",
-    lastNmae:"Singh",
-    emailId:"himu@gmail.com",
-    password:"123456"
-   });
-  await  user.save();
+   const user=new User(req.body);
+   try{
+      await  user.save();
   res.send("User data save")
+   }
+  catch(err){
+    res.status(400).send("User cannot connected to dataabse connect to team")
+  }
 
 
     
