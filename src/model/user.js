@@ -1,5 +1,5 @@
 const mongoose=require("mongoose");
-
+const validator=require("validator")
 const userSchema=new mongoose.Schema({
     firstName:{
         type:String,
@@ -15,6 +15,13 @@ const userSchema=new mongoose.Schema({
         required:true,
         unique:true,
         trim:true,
+        validate(value)
+        {
+            if(!validator.isEmail(value))
+            {
+               throw new Error("Invalid Email address"+value);
+            }
+        },
     },
     password:{
         type:String,
@@ -36,6 +43,13 @@ const userSchema=new mongoose.Schema({
     photoUrl:{
         type:String,
         default:"https://www.shutterstock.com/image-vector/female-profile-picture-placeholder-vector-260nw-450966928.jpg",
+        validate(value)
+        {
+            if(!validator.isURL(value))
+            {
+               throw new Error("Invalid Photo Url"+value);
+            }
+        },
     },
     about:{
         type:String,

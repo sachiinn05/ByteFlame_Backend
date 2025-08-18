@@ -48,7 +48,7 @@ app.get("/feed",async(req,res)=>{
 })
 
 //delete user by id
-app.delete("/delete",async(req,res)=>{
+app.delete("/user",async(req,res)=>{
     const userId=req.body.userId;
     try{
        const users=await User.findByIdAndDelete(userId);
@@ -66,10 +66,20 @@ app.delete("/delete",async(req,res)=>{
     }
 })
 //update the data from database by id
-app.patch("/update",async(req,res)=>{
-    const userId=req.body.userId;
+app.patch("/user/:userId",async(req,res)=>{
+    const userId=req.params?.userId;
     const data=req.body;
     try{
+        const ALLOWED_UPDATE=["photoUrl","about","gender","skills","age"];
+        const isUpdateAllowed=Object.keys(data).every((k)=>
+        ALLOWED_UPDATE.includes(k));
+        if(!isUpdateAllowed){
+            throw new Error("Update not allowed")
+        }
+        if(data?.skills.length>100)
+        {
+            throw new Error("Skills not more than 100 words")
+        }
       await User.findByIdAndUpdate({_id:userId},data);
       res.send("user update")
     }catch(err)
