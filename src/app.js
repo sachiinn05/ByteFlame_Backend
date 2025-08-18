@@ -36,15 +36,47 @@ app.get("/user",async(req,res)=>{
 
     }
 });
+
+//find all data from database
 app.get("/feed",async(req,res)=>{
     try{
       const users=await User.find({});
-      res.send(users);
+      res.send(users); 
     }catch(err){
         res.status(400).send("Something went wrong")
     }
 })
 
+//delete user by id
+app.delete("/delete",async(req,res)=>{
+    const userId=req.body.userId;
+    try{
+       const users=await User.findByIdAndDelete(userId);
+       if(!users)
+       {
+          res.status(404).send("User not found");
+
+       }
+       else{
+        res.send("User delete from database")
+       }
+    }catch(err)
+    {
+       res.status(400).send("Something went wrong"); 
+    }
+})
+//update the data from database by id
+app.patch("/update",async(req,res)=>{
+    const userId=req.body.userId;
+    const data=req.body;
+    try{
+      await User.findByIdAndUpdate({_id:userId},data);
+      res.send("user update")
+    }catch(err)
+    {
+       res.status(400).send("Something went wrong");  
+    }
+});
 connectDB()
 .then(()=>{
     console.log("DataBase connection established..");
