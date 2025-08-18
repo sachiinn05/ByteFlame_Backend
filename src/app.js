@@ -12,7 +12,7 @@ app.post("/signUp",async(req,res)=>{
   res.send("User data save")
    }
   catch(err){
-    res.status(400).send("User cannot connected to dataabse connect to team")
+    res.status(400).send("SignUP failed"+err.message)
   }  
 });
 
@@ -32,7 +32,7 @@ app.get("/user",async(req,res)=>{
         }
     }
     catch(err){
-        res.status(400).send("Something went wrong")
+        res.status(400).send("Something went wrong"+err.message);
 
     }
 });
@@ -74,7 +74,7 @@ app.patch("/update",async(req,res)=>{
       res.send("user update")
     }catch(err)
     {
-       res.status(400).send("Something went wrong");  
+       res.status(400).send("Something went wrong"+err.message);  
     }
 });
 connectDB()
