@@ -1,20 +1,60 @@
 const express=require("express");
 const connectDB=require("./config/database.js");
 const User=require("./model/user.js")
+const {validateSignUpData}=require("./utils/validation.js")
+const bcrypt=require("bcrypt")
 const app=express();
 app.use(express.json());
 
 //signUP APIs
-app.post("/signUp",async(req,res)=>{
-   const user=new User(req.body);
-   try{
+app.post("/signup",async(req,res)=>{
+    //Validation of data
+    try{
+    validateSignUpData(req);
+    const {firstName,lastName,emailId,password}=req.body;
+    //Encrypt the password
+    const passwordHash=await bcrypt.hash(password,10);
+    console.log(passwordHash);
+    //Creating a new instance of user model
+   const user=new User({
+    firstName,
+    lastName,
+    emailId,
+    password:passwordHash,
+   });
+   
       await  user.save();
   res.send("User data save")
    }
   catch(err){
-    res.status(400).send("SignUP failed"+err.message)
+    res.status(400).send("ERROR : "+ err.message)
   }  
 });
+
+//LogIn APIs
+app.post("/login",async(req,res)=>{
+    try{
+    const {emailId,password}=req.body;
+    const user= await User.findOne({emailId:emailId});
+    if(!user)
+    {
+        throw new Error("User not found");
+    }
+    const isPasswordValid=await bcrypt.compare(password,user.password);
+    if(isPasswordValid)
+    {
+        res.send("Login successful !");
+    }
+    else{
+        throw new Error("Password is incorrect");
+    }
+   } catch(err)
+   {
+    res.status(400).send("ERROR :"+err.message);
+
+   }
+})
+
 
 //get data from DB by using email
 app.get("/user",async(req,res)=>{
