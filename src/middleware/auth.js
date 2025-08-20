@@ -1,29 +1,29 @@
-const adminAuth=(req,res,next)=>{
-    console.log("Auth cheaked proper")
-    const token="xyz";
-    const isAdminAuth=token ==="xyz";
-    if(!isAdminAuth)
-    {
-        res.status(404).send("Error ");
-    }
-    else{
+const jwt=require("jsonwebtoken");
+const User=require("../model/user")
+const userAuth=async(req,res,next)=>{
+    try{
+        const {token}=req.cookies;
+        if(!token)
+        {
+            throw new Error("Token is not valid")
+        }
+        const decodeObj=await jwt.verify(token,"DEV@Tinder$790");
+        const {_id}=decodeObj;
+        const user= await User.findById(_id);
+        if(!user)
+        {
+            throw new Error("User not found");
+        }
+        req.user=user;
         next();
+
     }
-};
-const userAdmin=(req,res,next)=>{
-    console.log("User Auth Start");
-    const token="xyz";
-    const isUserAdmin=token==="xyz";
-    if(!isUserAdmin)
-    {
-        res.status(400).send("Error");
-    }
-    else{
-        next();
+    catch(err){
+       res.status(400).send("ERROR :"+err.message);
     }
 }
 
 module.exports={
-adminAuth,
-userAdmin,
+
+userAuth,
 }
