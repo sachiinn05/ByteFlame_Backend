@@ -2,9 +2,15 @@ const express=require("express");
 const connectDB=require("./config/database.js");
 const app=express();
 const cookieParser=require("cookie-parser")
-
+const cors=require("cors");
+app.use(cors({
+    origin:"http://localhost:5173/login",
+    credentials:true,
+})
+);
 app.use(express.json());
 app.use(cookieParser());
+
 
 const authRouter=require("./router/auth.js");
 const profileRouter=require("./router/profile..js");
