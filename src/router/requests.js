@@ -9,10 +9,14 @@ requestRouter.post("/request/send/:status/:toUserId",userAuth,async(req,res)=>{
         const fromUserId=req.user._id;
         const toUserId=req.params.toUserId;
         const status=req.params.status;
-        const allowedStatus=["ignored","interested"];
-        if(!allowedStatus)
+        const allowedStatus=["ignore","interested"];
+        if(!allowedStatus.includes(status))
         {
             return res.status(400).json({message :"Invalid status type"+status});
+        }
+        if (fromUserId.toString() === toUserId.toString())
+         { 
+            return res.status(400).json({ message: "You cannot send a request to yourself!" }); 
         }
 
         const user=await User.findById(toUserId);
@@ -60,7 +64,7 @@ requestRouter.post("/request/review/:status/:requestId",userAuth, async(req,res)
         status:"interested"
        });
               
-
+       
 
        if(!connectionRequest)
        {
