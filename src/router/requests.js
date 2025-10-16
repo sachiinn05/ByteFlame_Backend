@@ -3,6 +3,7 @@ const { userAuth } = require("../middleware/auth");
 const ConnectionRequest=require("../model/connectionRequest")
 const requestRouter=express.Router();
 const User=require("../model/user")
+const sendEmail=require("../utils/sendEmail")
 
 requestRouter.post("/request/send/:status/:toUserId",userAuth,async(req,res)=>{
     try{
@@ -39,8 +40,13 @@ requestRouter.post("/request/send/:status/:toUserId",userAuth,async(req,res)=>{
             status,
         });
         const data=await connectionRequest.save();
+           sendEmail.run("New Connection Request",
+             `${req.user.firstName} is ${status} in connecting with you!`)
+      .then((emailRes) => console.log("Email sent:", emailRes))
+      .catch((emailErr) => console.error("Email failed:", emailErr.message));
+
         res.json({
-            message:"Connection Request Sent Successfully",
+            message:req.user.firstName + "is"+status+"in"+toUserId.firstName,
             data,
         })
     }
@@ -72,6 +78,7 @@ requestRouter.post("/request/review/:status/:requestId",userAuth, async(req,res)
        }
        connectionRequest.status=status;
        const data =await connectionRequest.save();
+      
        res.status(200).json({message:"Connection request"+status,data});
 
 
