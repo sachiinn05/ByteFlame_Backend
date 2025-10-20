@@ -1,59 +1,85 @@
-# 🚀 ByteFlame Backend
+# ⚡ ByteFlame Backend
 
-ByteFlame Backend is a RESTful API built using **Node.js** and **Express.js**, designed to handle authentication, user management, chats, and connection requests for a dating-style application.
+[![Node.js](https://img.shields.io/badge/Node.js-18.x-brightgreen?style=for-the-badge&logo=node.js)](https://nodejs.org/)
+[![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express)](https://expressjs.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-4.4+-47A248?style=for-the-badge&logo=mongodb)](https://www.mongodb.com/)
+[![Hosted on AWS EC2](https://img.shields.io/badge/Hosted%20on-AWS%20EC2-orange?style=for-the-badge&logo=amazon-ec2)](https://aws.amazon.com/ec2/)
+[![DNS by Cloudflare](https://img.shields.io/badge/DNS-Cloudflare-f38020?style=for-the-badge&logo=cloudflare)](https://www.cloudflare.com/)
 
----
-
-## 🧰 Tech Stack
-
-- **Node.js** — JavaScript runtime environment  
-- **Express.js** — Web framework for routing and middleware  
-- **MongoDB + Mongoose** — NoSQL database and ODM  
-- **JWT (jsonwebtoken)** — Authentication using tokens  
-- **bcrypt** — Password hashing  
-- **cookie-parser** — Handle cookies for JWT tokens  
-- **Socket.IO** — Real-time communication (chat, notifications)  
-- **AWS EC2** — Hosting backend  
-- **Cloudflare** — DNS and domain management  
-- **PM2** — Process manager for production deployment
+A powerful **Node.js + Express.js** backend that powers the **ByteFlame** web application.  
+Built for scalability, real-time chat, and modern authentication — hosted on **AWS EC2** and managed using **PM2**.
 
 ---
 
-## 📁 Project Structure
+## 🌐 Live API Endpoint
+
+👉 **[https://api.byteflame.in](https://api.byteflame.in)**  
+(Behind **Cloudflare** + **Nginx Reverse Proxy**)
+
+---
+
+## 🚀 Tech Stack
+
+**Backend**
+
+- Node.js  
+- Express.js  
+- MongoDB + Mongoose  
+- JWT (Authentication)  
+- bcrypt (Password Hashing)  
+- cookie-parser  
+- Socket.io (Real-time chat)  
+- AWS SES (Email Service)  
+- PM2 (Process Manager)
+
+**Infrastructure**
+
+- AWS EC2 (Ubuntu 24.04 LTS)  
+- Nginx (Reverse Proxy + SSL)  
+- Cloudflare (DNS + HTTPS Proxy)
+
+---
+
+## 🧠 Features
+
+* 🔐 Secure JWT Authentication with cookies  
+* 💬 Real-time Chat (Socket.io)  
+* 👥 Connection Requests & Friend Management  
+* 🧾 Feed & Profile APIs  
+* 📧 AWS SES Email Verification  
+* 🧱 Modular Folder Structure  
+* ☁️ Deployed on AWS EC2 with PM2 + Cloudflare SSL  
+
+---
+
+## 🧩 Folder Structure
 
 ```
 ByteFlame_Backend/
-│
 ├── src/
 │   ├── config/
-│   │   └── database.js        # MongoDB connection setup
-│   │
+│   │   └── database.js
 │   ├── middleware/
-│   │   └── auth.js            # JWT authentication middleware
-│   │
+│   │   └── auth.js
 │   ├── model/
-│   │   ├── user.js            # User schema
-│   │   ├── chat.js            # Chat schema
+│   │   ├── user.js
+│   │   ├── chat.js
 │   │   └── connectionRequest.js
-│   │
 │   ├── router/
 │   │   ├── auth.js
 │   │   ├── chat.js
 │   │   ├── profile.js
 │   │   ├── requests.js
 │   │   └── user.js
-│   │
 │   ├── utils/
 │   │   ├── sendEmail.js
 │   │   ├── sesClient.js
 │   │   ├── socket.js
 │   │   └── validation.js
-│   │
-│   └── app.js                 # Express app entry point
+│   └── app.js
 │
-├── .env                       # Environment variables
+├── .env
 ├── package.json
-├── .gitignore
 └── README.md
 ```
 
@@ -61,68 +87,57 @@ ByteFlame_Backend/
 
 ## ⚙️ Installation & Setup
 
-### 1. Clone the repository
+### 1️⃣ Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/ByteFlame_Backend.git
+git clone https://github.com/sachiinn05/ByteFlame_Backend.git
 cd ByteFlame_Backend
 ```
 
-### 2. Install dependencies
+### 2️⃣ Install Dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Configure environment variables
+### 3️⃣ Add Environment Variables
 
 Create a `.env` file in the project root:
 
 ```env
-PORT=5173
+PORT=8080
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_secret_key
-AWS_ACCESS_KEY_ID=your_aws_key
-AWS_SECRET_ACCESS_KEY=your_aws_secret
+AWS_ACCESS_KEY_ID=your_aws_access_key
+AWS_SECRET_ACCESS_KEY=your_aws_secret_key
 ```
 
-### 4. Run the server (development)
+### 4️⃣ Run the Server (Development)
 
 ```bash
 npm run dev
 ```
 
-### 5. Run the server (production)
-
-```bash
-npm start
-```
+👉 The server runs at  
+**[http://localhost:9000](http://localhost:9000)**
 
 ---
-
-## 🧠 Authentication Middleware
-
-`src/middleware/auth.js` handles token verification using **JWT**
-
-
 
 ## ☁️ Deployment (AWS EC2 + PM2)
 
-This backend is hosted on **AWS EC2 (Ubuntu 24.04 LTS)** and managed using **PM2** for process monitoring. **Cloudflare** is used for DNS and domain management.
+This backend is deployed on **AWS EC2 (Ubuntu 24.04 LTS)** using **PM2** for process management and **Cloudflare** for DNS + SSL.
 
 ---
 
-### 🖥️ 1. Connect to your EC2 instance
-
-Use your `.pem` key to SSH into the EC2 server:
+### 🖥️ 1. Connect to EC2 Instance
 
 ```bash
-ssh -i "C:\Users\asus\Downloads\byteflame-secret.pem" ubuntu@ec2-13-51-48-171.eu-north-1.compute.amazonaws.com
+ssh -i "byteflame-secret.pem" ubuntu@ec2-13-51-48-171.eu-north-1.compute.amazonaws.com
 ```
 
 ---
 
-### 📂 2. Navigate to your backend directory
+### 📂 2. Navigate to Project Folder
 
 ```bash
 cd ByteFlame_Backend
@@ -130,7 +145,7 @@ cd ByteFlame_Backend
 
 ---
 
-### 🔄 3. Pull the latest code from GitHub
+### 🔄 3. Pull Latest Code
 
 ```bash
 git pull
@@ -138,7 +153,7 @@ git pull
 
 ---
 
-### 📦 4. Install dependencies
+### 📦 4. Install Dependencies
 
 ```bash
 npm install
@@ -146,52 +161,36 @@ npm install
 
 ---
 
-### ⚙️ 5. Manage the app with PM2
+### ⚙️ 5. Manage App with PM2
 
-#### Start the app (first time)
+#### Start the App (First Time)
 ```bash
 pm2 start src/app.js --name ByteFlame_Backend
 ```
 
-#### Check running processes
+#### Check Status
 ```bash
 pm2 list
 ```
 
-Expected output:
-```
-┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
-│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
-├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
-│ 0  │ ByteFlame_Backend  │ fork     │ 18   │ online    │ 0%       │ 16.9mb   │
-└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
-```
-
-#### Restart the app
+#### Restart App
 ```bash
 pm2 restart ByteFlame_Backend
 ```
 
-If you’ve updated environment variables:
-```bash
-pm2 restart ByteFlame_Backend --update-env
-```
-
-#### View live logs
+#### View Logs
 ```bash
 pm2 logs
 ```
 
-#### Flush logs
+#### Clear Logs
 ```bash
 pm2 flush
 ```
 
 ---
 
-### 🧠 6. Auto-start PM2 on reboot
-
-To make sure your backend restarts automatically after server reboot:
+### 🔁 6. Auto Restart on Reboot
 
 ```bash
 pm2 startup
@@ -200,55 +199,119 @@ pm2 save
 
 ---
 
-### 🌐 7. Domain & DNS (Cloudflare)
+### 🌐 7. Configure Nginx (Optional but Recommended)
 
-- **Hosting:** AWS EC2 (Ubuntu 24.04 LTS)  
-- **DNS:** Cloudflare  
-- **Domain Example:** `https://api.yourdomain.com`  
-- Cloudflare proxies requests to your EC2 public IP.  
-- Use Nginx (optional) as a reverse proxy to serve your Node.js app on port 80 or 443 with SSL.
+#### Install Nginx
+```bash
+sudo apt install nginx -y
+```
+
+#### Edit Nginx Config
+```bash
+sudo nano /etc/nginx/sites-available/default
+```
+
+#### Example Configuration
+```nginx
+server {
+    listen 80;
+    server_name api.byteflame.in;
+
+    location / {
+        proxy_pass http://localhost:9000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+#### Restart Nginx
+```bash
+sudo systemctl restart nginx
+```
 
 ---
 
-## 🧩 Scripts
+### 🔐 8. Domain Setup via Cloudflare
+
+1. Go to **Cloudflare DNS Settings**  
+2. Add an **A record**  
+   - Name: `api`  
+   - Value: `your-ec2-public-ip`  
+   - Proxy: **Enabled (orange cloud)**  
+3. Set **SSL/TLS Mode → Full**  
+4. Done ✅ — Your backend is now accessible via HTTPS.
+
+---
+
+## 🧩 Common PM2 Commands
 
 | Command | Description |
-|----------|--------------|
-| `npm start` | Run app in production |
-| `npm run dev` | Run app in development (nodemon) |
-| `pm2 list` | Show running PM2 processes |
-| `pm2 logs` | View logs |
-| `pm2 restart ByteFlame_Backend` | Restart the backend |
+|----------|-------------|
+| `pm2 start src/app.js --name ByteFlame_Backend` | Start app |
+| `pm2 restart ByteFlame_Backend` | Restart app |
+| `pm2 list` | Check running processes |
+| `pm2 logs` | View real-time logs |
 | `pm2 flush` | Clear logs |
+| `pm2 save` | Save current state |
+| `pm2 startup` | Auto-start on reboot |
+
+---
+
+## 🧱 API Overview
+
+| Endpoint | Method | Description |
+|-----------|---------|-------------|
+| `/api/auth/signup` | POST | Register new user |
+| `/api/auth/login` | POST | Login user |
+| `/api/user/profile` | GET | Get user profile |
+| `/api/connection/send` | POST | Send connection request |
+| `/api/chat/:userId` | GET | Fetch chat history |
+| `/api/chat/send` | POST | Send chat message |
+
+> 💡 All protected routes require a valid **JWT token** in cookies.
+
+---
+
+## 💻 Scripts
+
+| Command | Description |
+|----------|-------------|
+| `npm run dev` | Start development server |
+| `npm start` | Start production server |
+| `pm2 list` | View all processes |
+| `pm2 logs` | View logs |
+| `pm2 restart ByteFlame_Backend` | Restart app |
 
 ---
 
 ## 📦 Dependencies
 
-Main dependencies listed in `package.json`:
+Main dependencies include:
 
 - express  
 - mongoose  
 - jsonwebtoken  
 - bcrypt  
-- cors  
 - cookie-parser  
-- dotenv  
+- cors  
 - socket.io  
+- dotenv  
 - pm2  
 
 ---
 
-## 🛡️ License
+## 🧑‍💻 Author
 
-This project is licensed under the **ISC License**.
-
----
-
-## 👨‍💻 Author
-
-Developed by **ByteFlame Team** 🔥  
-Hosted on **AWS EC2**, managed with **PM2**, and secured via **Cloudflare DNS**.  
-Maintained and deployed manually using SSH and Git.
+**Sachin Singh**  
+🔗 [GitHub Profile](https://github.com/sachiinn05)  
+💡 Hosted on **AWS EC2**, managed with **PM2**, and secured via **Cloudflare**.
 
 ---
+
+## 📜 License
+
+This project is licensed under the **MIT License**.
