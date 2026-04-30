@@ -58,7 +58,7 @@ userRouter.get("/feed", userAuth, async (req, res) => {
   try {
     const loggedInUser = req.user;
 
-    // 1️⃣ Find all interactions (sent + received)
+  
     const connectionRequests = await ConnectionRequest.find({
       $or: [
         { fromUserId: loggedInUser._id },
@@ -66,7 +66,7 @@ userRouter.get("/feed", userAuth, async (req, res) => {
       ],
     }).select("fromUserId toUserId status");
 
-    // 2️⃣ Build exclusion set
+  
     const hideUsersFromFeed = new Set();
 
     connectionRequests.forEach((req) => {
@@ -77,15 +77,15 @@ userRouter.get("/feed", userAuth, async (req, res) => {
       }
     });
 
-    // 3️⃣ Always exclude self
+ 
     hideUsersFromFeed.add(loggedInUser._id.toString());
 
-    // 4️⃣ Fetch remaining users
+
     const users = await User.find({
       _id: { $nin: Array.from(hideUsersFromFeed) },
     })
       .select(USER_SAFE_DATA)
-      .limit(10); // pagination ready
+      .limit(10); 
 
     res.send(users);
   } catch (err) {
