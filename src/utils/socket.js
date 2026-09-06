@@ -1,7 +1,7 @@
 const socket = require("socket.io");
 const crypto = require("crypto");
 const { Chat } = require("../model/chat");
-const ConnectionRequest = require("../model/connectionRequest");
+const { allowOrigin } = require("./cors");
 
 const getSecretRoomId = (userId, targetUserId) => {
   return crypto
@@ -47,7 +47,10 @@ const areFriends = async (userId, targetUserId) => {
 const initializeSocket = (server) => {
   const io = socket(server, {
     cors: {
-      origin: "http://localhost:5173",
+      origin: (origin, callback) => {
+        if (allowOrigin(origin)) callback(null, true);
+        else callback(new Error("CORS blocked: " + origin));
+      },
       credentials: true,
     },
   });

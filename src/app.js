@@ -6,22 +6,18 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const http =require("http")
 const initializeSocket=require("./utils/socket.js")
+const { corsOptions } = require("./utils/cors.js");
 
 const app = express();
 
-// CORS config
-const corsOptions = {
-  origin: "http://localhost:5173",
-  credentials: true,
-
-};
 app.use(cors(corsOptions));
-
-// app.options("*", cors(corsOptions));
-
 app.use(express.json());
 app.use(cookieParser());
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+
+app.get("/", (_req, res) => {
+  res.send("ByteFlame API is running");
+});
 
 
 // Routes
@@ -43,8 +39,8 @@ initializeSocket(server);
 connectDB()
   .then(() => {
     console.log("Database connection established..");
-    server.listen(9000, () => {
-      console.log("Server listening on port 9000");
+    server.listen(process.env.PORT || 9000, () => {
+      console.log("Server listening on port " + (process.env.PORT || 9000));
     });
   })
   .catch((err) => {

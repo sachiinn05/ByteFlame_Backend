@@ -3,6 +3,7 @@ const authRouter=express.Router();
 const {validateSignUpData}=require("../utils/validation.js");
 const bcrypt=require("bcrypt");
 const User=require("../model/user.js")
+const { getCookieOptions } = require("../utils/cors.js");
 
 
 authRouter.post("/signup",async(req,res)=>{
@@ -26,9 +27,7 @@ authRouter.post("/signup",async(req,res)=>{
        
 
      
-        res.cookie("token", token, {
-        expires: new Date(Date.now() + 8 * 3600000) // expires in 8 hours
-        });
+        res.cookie("token", token, getCookieOptions());
 
   res.send({message:"User data save",data:savedUser})
    }
@@ -53,9 +52,7 @@ authRouter.post("/login",async(req,res)=>{
        
 
         //console.log(token);
-        res.cookie("token", token, {
-        expires: new Date(Date.now() + 8 * 3600000) // expires in 8 hours
-        });
+        res.cookie("token", token, getCookieOptions());
 
         res.send(user);
     }
@@ -69,8 +66,9 @@ authRouter.post("/login",async(req,res)=>{
    }
 });
 authRouter.post("/logout",async(req,res)=>{
-  res.cookie("token",null,{
-    expires:new Date(Date.now()),
+  res.cookie("token", null, {
+    ...getCookieOptions(),
+    expires: new Date(Date.now()),
   });
   res.send("logout successful");
 })
