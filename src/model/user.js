@@ -47,13 +47,6 @@ const userSchema=new mongoose.Schema({
     photoUrl:{
         type:String,
         default:"https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small_2x/default-avatar-icon-of-social-media-user-vector.jpg",
-        validate(value)
-        {
-            if(!validator.isURL(value))
-            {
-               throw new Error("Invalid Photo Url"+value);
-            }
-        },
     },
     about:{
         type:String,

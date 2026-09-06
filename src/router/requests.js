@@ -32,6 +32,9 @@ requestRouter.post("/request/send/:status/:toUserId",userAuth,async(req,res)=>{
             ]
         });
         if(existingConnectionRequest){
+            if (existingConnectionRequest.status === "blocked") {
+              return res.status(400).json({ message: "You cannot connect with this user" });
+            }
             return res.status(400).json({message:"Connection request Already Exists!!"})
         }
         const connectionRequest=new ConnectionRequest({
@@ -87,5 +90,71 @@ requestRouter.post("/request/review/:status/:requestId",userAuth, async(req,res)
     catch(err){
        res.status(400).send("ERROR:"+err.message); 
     }
-})
-module.exports=requestRouter;
+});
+
+const findPair = (userId, targetUserId) =>
+  ConnectionRequest.findOne({
+    $or: [
+      { fromUserId: userId, toUserId: targetUserId },
+      { fromUserId: targetUserId, toUserId: userId },
+    ],
+  });
+
+requestRouter.post("/request/unmatch/:userId", userAuth, async (req, res) => {
+  try {
+    const loggedInUser = req.user;
+    const targetUserId = req.params.userId;
+
+    const connection = await findPair(loggedInUser._id, targetUserId);
+    if (!connection || connection.status !== "accepted") {
+      return res.status(404).json({ message: "No active match found" });
+    }
+
+    await connection.deleteOne();
+    try {
+      const { notifyRelationshipEnded } = require("../utils/socket.js");
+      notifyRelationshipEnded(loggedInUser._id.toString(), targetUserId);
+    } catch (_e) {
+      /* socket optional */
+    }
+    res.json({ message: "Unmatched successfully" });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+requestRouter.post("/request/block/:userId", userAuth, async (req, res) => {
+  try {
+    const loggedInUser = req.user;
+    const targetUserId = req.params.userId;
+
+    if (loggedInUser._id.toString() === targetUserId) {
+      return res.status(400).json({ message: "You cannot block yourself" });
+    }
+
+    let connection = await findPair(loggedInUser._id, targetUserId);
+    if (connection) {
+      connection.status = "blocked";
+      await connection.save();
+    } else {
+      connection = await ConnectionRequest.create({
+        fromUserId: loggedInUser._id,
+        toUserId: targetUserId,
+        status: "blocked",
+      });
+    }
+
+    try {
+      const { notifyRelationshipEnded } = require("../utils/socket.js");
+      notifyRelationshipEnded(loggedInUser._id.toString(), targetUserId);
+    } catch (_e) {
+      /* socket optional */
+    }
+
+    res.json({ message: "User blocked", data: connection });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+module.exports = requestRouter;
