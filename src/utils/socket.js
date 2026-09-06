@@ -1,6 +1,7 @@
 const socket = require("socket.io");
 const crypto = require("crypto");
 const { Chat } = require("../model/chat");
+const ConnectionRequest = require("../model/connectionRequest");
 const { allowOrigin } = require("./cors");
 
 const getSecretRoomId = (userId, targetUserId) => {
@@ -48,11 +49,12 @@ const initializeSocket = (server) => {
   const io = socket(server, {
     cors: {
       origin: (origin, callback) => {
-        if (allowOrigin(origin)) callback(null, true);
+        if (allowOrigin(origin)) callback(null, origin || true);
         else callback(new Error("CORS blocked: " + origin));
       },
       credentials: true,
     },
+    transports: ["websocket", "polling"],
   });
   ioRef = io;
 
@@ -71,12 +73,16 @@ const initializeSocket = (server) => {
     });
 
     socket.on("joinChat", async ({ firstName, userId, targetUserId }) => {
-      if (!userId || !targetUserId) return;
-      const friends = await areFriends(userId, targetUserId);
-      if (!friends) return;
-      const roomId = getSecretRoomId(userId, targetUserId);
-      socket.join(roomId);
-      console.log((firstName || userId) + " joined Room : " + roomId);
+      try {
+        if (!userId || !targetUserId) return;
+        const friends = await areFriends(userId, targetUserId);
+        if (!friends) return;
+        const roomId = getSecretRoomId(userId, targetUserId);
+        socket.join(roomId);
+        console.log((firstName || userId) + " joined Room : " + roomId);
+      } catch (err) {
+        console.log(err);
+      }
     });
 
     socket.on("leaveChat", ({ userId, targetUserId }) => {
